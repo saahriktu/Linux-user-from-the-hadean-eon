@@ -1,4 +1,4 @@
-Собрать PDF файл из TeX исходника в GNU/Linuxe можно командой
+Собрать PDF файл из TeX исходника в GNU/Linux'e можно командой
 pdflatex file.tex
 
 Современная реализация бинарника pdflatex относится к texlive.
