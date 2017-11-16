@@ -190,12 +190,14 @@ style \textquotedbl saahriktu-style\textquotedbl  \{ \\
 font\_name = \textquotedbl Sans 15\textquotedbl  \\
 \} \\
 widget\_class \textquotedbl *\textquotedbl{ style }\textquotedbl saahriktu-style\textquotedbl  \\
+\hline
 \end{tabular}
 \begin{tabular}{|p{\textwidth}|}
 \hline
 В Firefox'е отключить предупреждения о передаче данных форм не через HTTPS можно следующим способом: в about:config достаточно выставить значение переменной security.insecure\_field\_warning.contextual.enabled в false. \\
  \\
 А для отключения значка серого замка, который перечёркнут красной линией, можно выставить в about:config значение переменной security.insecure\_password.ui.enabled в false. \\
+\hline
 \end{tabular}
 \begin{tabular}{|p{\textwidth}|}
 \hline
@@ -203,12 +205,14 @@ widget\_class \textquotedbl *\textquotedbl{ style }\textquotedbl saahriktu-style
 <<ls /var/log/packages/ | rev | cut -d - -f 4- | rev>>. \\
 А получить список установленных пакетов с одинаковыми именами (в Slackware такое возможно если активно красноглазить) можно командой \\
 <<ls /var/log/packages/ | rev | cut -d - -f 4- | rev | uniq -d>>. \\
+\hline
 \end{tabular}
 \begin{tabular}{|p{\textwidth}|}
 \hline
 При выполнении команд вида \\
 <<yes n | find dir1 -type f -exec mv -i \textquotedbl \{\}\textquotedbl{ dir2 }\textbackslash;>> \\
 не следует забывать -i, иначе конструкция потеряет половину смысла, и файлы с одинаковыми именами будут перезаписаны друг другом. \\
+\hline
 \end{tabular}
 \begin{tabular}{|p{\textwidth}|}
 \hline
@@ -217,6 +221,7 @@ widget\_class \textquotedbl *\textquotedbl{ style }\textquotedbl saahriktu-style
 (вместо <</mnt/mpt0/system/slackware/sbosrcarch/>> подставить путь к своей директории). \\
  \\
 Сами слакбилды со slackbuilds.org можно тоже синхронизировать через github. Их зеркало на github'е можно найти, например, здесь: https://github.com/willysr/slackbuilds . \\
+\hline
 \end{tabular}
 \begin{tabular}{|p{\textwidth}|}
 \hline
@@ -226,6 +231,7 @@ widget\_class \textquotedbl *\textquotedbl{ style }\textquotedbl saahriktu-style
 <<NROFF /usr/bin/groff -Dutf8 -Tutf8 -mandoc>>. \\
  \\
 Из коробки /usr/bin/vi является симлинком на текстовый редактор elvis в котором нет нормальной поддержки UTF-8 (всё кракозябрами). А к vi может обращаться тот же git. Простейший вариант устранения проблемы: <<removepkg elvis \&\& ln -s /usr/bin/vim /usr/bin/vi>>. Ещё можно, например, поставить или ex-vi (устанавливается в /opt/ex-vi/bin/vi) или nvi, и прописать симлинк на установленный редактор. \\
+\hline
 \end{tabular}
 \begin{tabular}{|p{\textwidth}|}
 \hline
@@ -233,10 +239,12 @@ widget\_class \textquotedbl *\textquotedbl{ style }\textquotedbl saahriktu-style
 <<chmod 4755 /usr/bin/eject>>. \\
 Если понадобится вернуть всё как было, то поможет команда от root'а \\
 <<chmod 0660 /usr/bin/eject>>. \\
+\hline
 \end{tabular}
 \begin{tabular}{|p{\textwidth}|}
 \hline
 Если при обновлении Debian'а происходит ошибка проверки хэшей, то может помочь удаление файла dists/stable/InRelease. \\
+\hline
 \end{tabular}
 \begin{tabular}{|p{\textwidth}|}
 \hline
