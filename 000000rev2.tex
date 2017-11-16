@@ -1,0 +1,252 @@
+\documentclass[14pt,openany]{book}
+\usepackage{cmap}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage[T2A]{fontenc}
+\usepackage{times}
+\usepackage{listings}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm,bindingoffset=0cm]{geometry}
+\linespread{0.95}
+\title{Журнал <<Linux user from the hadean eon>> №000000}
+\author{saahriktu}
+\begin{document}
+\renewcommand{\normalsize}{\Large}
+\maketitle
+\newpage
+\begin{center}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+Обратите внимание, что на x86/x86\_64 в ядерной консоли без иксов по дефолту SDL2 собирается исключительно с dummy видеодрайвером. При том, что существует возможность включить поддержку того же directfb, но это делается принудительно вручную через опцию -{}-enable-video-directfb. \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+Если нужно задать grep'у выражение, которое содержит символ табуляции '\textbackslash t' (это может быть полезно, например, для обработки вывода du), то можно использовать формат -{}-perl-regexp (сокращённая форма ключа --- <<-P>>). \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+Сборка nethack 3.6.0: \\
+cd nethack-3.6.0/ \\
+vim sys/unix/hints/linux \\
+sys/unix/setup.sh sys/unix/hints/linux \\
+make all \\
+make install \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+Сборка perl6: \\
+perl Configure.pl -{}-gen-moar -{}-gen-nqp -{}-backends=moar -{}-prefix=/usr \&\& make \&\& make install \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+Подружить ncurses и KOI8-R можно при помощи \\
+\#include <locale.h> \\
+ \\
+       setlocale(LC\_ALL, \textquotedbl ru\_RU.KOI8-R\textquotedbl ); \\
+ \\
+Также следует обратить внимание на то, что addch() работает с unsigned char. \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+После обновления glibc'а надёжнее удалить файл /usr/lib/locale/locale-archive и сгенерировать нужные локали заново. \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+При сборке fuse-emulator'а с SDL следует явно указывать опцию -{}-with-sdl. \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+При установке telegram-cli достаточно просто скопировать бинарник в /usr/bin, а ключ в /etc/telegram/server.pub. После чего остаётся добавить строчку
+<<alias telegram-cli=\textquotedbl telegram-cli -k /etc/telegram/server.pub\textquotedbl>> \\
+в \textasciitilde/.bashrc. \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+Обратите внимание на то, что оболочка после логина в нативную консоль отличается от эмуляторов терминала в графических средах и оболочки в виртуальных терминалах, которые были открыты через openvt, тем, что последние чатают \textasciitilde/.bash\_profile, игнорируя \textasciitilde/.bashrc. \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+Файл /etc/udev/rules.d/60-persistent-storage.rules является устаревшим, и может приводить к ошибке \\
+<<udevd[XXXX]: failed to execute '/lib/udev/socket:/org/kernel/udev/monitor' 'socket:/org/kernel/udev/monitor': No such file or directory>> \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+Патчи для сборки/сборка \\
+splint: <<LDFLAGS = -lfl>> --- src/Makefile \\
+sparse 0.5.0: <<LDFLAGS += -g -lpthread -lcurses -ldl>> --- Makefile \\
+lapack-3.6.0: cmake -DCMAKE\_INSTALL\_PREFIX=/usr -DBUILD\_SHARED\_LIBS=ON CMakeLists.txt \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+В bash'е и readline можно отключить поддержку юникода: \\
+sed -i 's/\^{}opt\_multibyte=yes/opt\_multibyte=no/' configure \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+В Ruby поддержка локали KOI8-R включается так: \\
+\#!/usr/bin/ruby \\
+\# encoding: KOI8-R \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+Из библиотеки glibc, которая обеспечивает основную поддержку локали KOI8-R, выпилить поддержку юникода нельзя. Особенно это касается функций strftime(), printf(), vfprintf(), strtod(), strtold(), vfscanf(), confstr(), regcomp(), regexec(), fnmatch() и error(). Функции продолжают работать с однобайтными кодировками, но могут местами жрать больше оперативки. Поэтому лучше использовать, например, функции putchar() и putstr() вместо printf() где это только можно. Кстати, на более низком уровне и putchar() и printf() функции вызывают \_IO\_putc\_unlocked() (а для юникода printf вызывают \_IO\_putwc\_unlocked()). Собственно, сначала происходит блокировка stdout через \_IO\_acquire\_lock(), которая снимается через \_IO\_release\_lock(). Это уровень подсистемы libio из состава glibc. Собственно, \_IO\_putc\_unlocked() является макросом, который дёргает \_IO\_BE(), \_IO\_write\_ptr, \_IO\_write\_end, \_\_overflow(). puts() же является алиасом \_IO\_puts(). \_IO\_puts() является полноценной функцией, которая помимо блокировок дёргает \_IO\_vtable\_offset(), \_IO\_fwide(), \_IO\_sputn() и MIN(). Попытавшийся распутать это дальше обнаружит то, что за пределы glibc'а все эти клубки алиасов и макросов не ведут. \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+Не все функции в glibc определены явно. В glibc 2.24 появились, например, новые функции, которые требуют доопределения перед их явным использованием:
+\#include <tgmath.h> \\
+ \\
+double nextup(double); \\
+float nextupf(float); \\
+long double nextupl(long double); \\
+double nextdown(double); \\
+float nextdownf(float); \\
+long double nextdownl(long double); \\
+ \\
+Без доопределения функции, вопреки официальной документации, возвращают int, а компилятор выдаёт предупреждения. \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+The 'nextup' function returns the next representable neighbor of X in the direction of positive infinity.  If X is the smallest negative subnormal number in the type of X the function returns '-0'.  If X = '0' the function returns the smallest positive subnormal number in the type of X.  If X is NaN, NaN is returned. If X is +inf, +inf is
+returned.  'nextup' is based on TS 18661 and currently enabled as a GNU extension.  'nextup' never raises an exception except for signaling NaNs. \\
+ \\
+The 'nextdown' function returns the next representable neighbor of X in the direction of negative infinity.  If X is the smallest positive subnormal number in the type of X the function returns '+0'.  If X = '0' the function returns the smallest negative subnormal number in the type of X.  If X is NaN, NaN is returned. If X is -inf, -inf is returned.  'nextdown' is based on TS 18661 and currently enabled as a GNU extension.  'nextdown' never raises an exception except for signaling NaNs. \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+В Perl'е 5 <<use bignum;>> увеличивает точность вычислений, поскольку задействует работу с большими числами. По дефолту точность определяется автоматически (или ограничивается примерно 42-43), но может быть уточнена через опции модуля (например, <<use bignum a => 128;>>). Последние цифры в таких вычислениях являются неточными, поэтому вручную точность лучше устанавливать с запасом. В Perl 6 нет модуля bignum, но большие числа задействованы по дефолту. \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+В Perl 5 конкатенация строк происходит через символ '.', а в Perl 6 через символ '\textasciitilde'. В PHP echo для конкатенации использует как и Python print символ ','. print в Python 3 в отличие от Python 2 требует формы print(). puts в Ruby для конкатенации строк использует символы '+' и ',' (в последнем случае происходит переход на новую строку), но при этом никакие вычисления на лету происходить не могут --- переменные с числовыми значениями должны быть подставлены в форме var.to\_s(). \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+В Perl 6 есть функция atan(), а в Perl 5 её нет. Вместо неё в Perl 5 функция atan2(Y,X), которая возвращает арктангенс Y/X (угол между OX и OA, где O (0; 0), а A (X; Y). \\
+\hline
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+В Python 2 и Ruby, как и в C, <<7.0>> --- число с плавающей запятой, а <<7>> --- целое. Таким образом, например, \\
+77.0 / 17.0 = 4.529412; \\
+77 / 17 = 4. \\
+ \\
+В PHP 7, Python 3 и Perl 5/6 не так: \\
+77 / 17 = 4.529412. \\
+\hline
+\end{tabular}
+\end{center}
+Пример работы с джойстиком через ядро Linux напрямую:\\
+\begin{lstlisting}
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <linux/joystick.h>
+#include <math.h>
+
+int main(){
+        int i;
+        int jstck0 = open ("/dev/input/js0", O_RDONLY);
+        struct JS_DATA_TYPE jsdt;
+        for(;;){
+                if (read (jstck0, &jsdt, JS_RETURN) != JS_RETURN) {
+                        /* error */
+                        printf("Something went wrong...\n");
+                        break;
+                }
+                for(i=0;i<13;i++)if(jsdt.buttons & (int)pow(2, i))
+			printf("Button %d pressed.\n", i);
+                printf("X = %d, Y = %d.\n", jsdt.x, jsdt.y);
+                sleep(1);
+        }
+        close(jstck0);
+}
+\end{lstlisting}
+Таким образом можно добавлять поддержку джойстика в обычные игры на ncurses без необходимости задействования дополнительных библиотек.
+\begin{center}  
+\begin{tabular}{|p{\textwidth}|}
+\hline
+Изменить размер шрифта в Pidgin'е можно через создание собственного стиля в файле \textasciitilde/.purple/gtkrc-2.0. Например, так: \\
+style \textquotedbl saahriktu-style\textquotedbl  \{ \\
+font\_name = \textquotedbl Sans 15\textquotedbl  \\
+\} \\
+widget\_class \textquotedbl *\textquotedbl{ style }\textquotedbl saahriktu-style\textquotedbl  \\
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+В Firefox'е отключить предупреждения о передаче данных форм не через HTTPS можно следующим способом: в about:config достаточно выставить значение переменной security.insecure\_field\_warning.contextual.enabled в false. \\
+ \\
+А для отключения значка серого замка, который перечёркнут красной линией, можно выставить в about:config значение переменной security.insecure\_password.ui.enabled в false. \\
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+Получить список имён установленных пакетов в Slackware можно командой \\
+<<ls /var/log/packages/ | rev | cut -d - -f 4- | rev>>. \\
+А получить список установленных пакетов с одинаковыми именами (в Slackware такое возможно если активно красноглазить) можно командой \\
+<<ls /var/log/packages/ | rev | cut -d - -f 4- | rev | uniq -d>>. \\
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+При выполнении команд вида \\
+<<yes n | find dir1 -type f -exec mv -i \textquotedbl \{\}\textquotedbl{ dir2 }\textbackslash;>> \\
+не следует забывать -i, иначе конструкция потеряет половину смысла, и файлы с одинаковыми именами будут перезаписаны друг другом. \\
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+Наверное, не так уж многие знают, что существует зеркало исходников для слакбилдов со slackbuilds.org. Создать/синхронизировать локальное зеркало можно такой командой как \\
+<<rsync -rtLvH -{}-delete-after -{}-delay-updates -{}-safe-links -{}-copy-links -{}-ignore-errors -{}-ignore-existing rsync://slackware.uk/sbosrcarch/by-name/ /mnt/mpt0/system/slackware/sbosrcarch/>> \\
+(вместо <</mnt/mpt0/system/slackware/sbosrcarch/>> подставить путь к своей директории). \\
+ \\
+Сами слакбилды со slackbuilds.org можно тоже синхронизировать через github. Их зеркало на github'е можно найти, например, здесь: https://github.com/willysr/slackbuilds . \\
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+Улучшаем поддержку UTF-8 в Slackware. \\
+ \\
+Для того, чтобы man поддерживал локаль ru\_RU.UTF-8, пакет нужно пересобрать с этим слакбилдом: https://github.com/saahriktu/modified-slackbuilds/tree/master/man , а затем в /etc/man.conf прописать \\
+<<NROFF /usr/bin/groff -Dutf8 -Tutf8 -mandoc>>. \\
+ \\
+Из коробки /usr/bin/vi является симлинком на текстовый редактор elvis в котором нет нормальной поддержки UTF-8 (всё кракозябрами). А к vi может обращаться тот же git. Простейший вариант устранения проблемы: <<removepkg elvis \&\& ln -s /usr/bin/vim /usr/bin/vi>>. Ещё можно, например, поставить или ex-vi (устанавливается в /opt/ex-vi/bin/vi) или nvi, и прописать симлинк на установленный редактор. \\
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+Если команда eject отказывается работать от обычного юзера с ошибкой <<eject: unable to eject, last error: Неприменимый к данному устройству ioctl>>, но работает от root'а, то может помочь команда от root'а \\
+<<chmod 4755 /usr/bin/eject>>. \\
+Если понадобится вернуть всё как было, то поможет команда от root'а \\
+<<chmod 0660 /usr/bin/eject>>. \\
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+Если при обновлении Debian'а происходит ошибка проверки хэшей, то может помочь удаление файла dists/stable/InRelease. \\
+\end{tabular}
+\begin{tabular}{|p{\textwidth}|}
+\hline
+В Firefox'е принудительно включить многопроцессорность в about:config с 47-й версии можно так: \\
+browser.tabs.remote.autostart*=true \\
+browser.tabs.remote.force-enable=true // создать параметр \\
+dom.ipc.processCount=20 \\
+ \\
+Статус мультипроцессности можно проверять в about:support, строчка <<Multiprocess Windows>>. При включенной мультипроцессности там будет нечто наподобие <<1/1 (Enabled by user)>>. Ключевое слово <<Enabled>>. \\
+\hline
+\end{tabular}
+\end{center}  
+\end{document}
